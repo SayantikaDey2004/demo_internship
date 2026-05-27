@@ -1,0 +1,1 @@
+{"version":3,"file":"jwtPayloadInterface.d.ts","sourceRoot":"","sources":["../../../src/interface/jwt/jwtPayloadInterface.ts"],"names":[],"mappings":"AAAA,OAAO,QAAQ,MAAM,UAAU,CAAC;AAChC,OAAO,EAAE,SAAS,EAAE,MAAM,+BAA+B,CAAC;AAE1D,MAAM,WAAW,WAAW;IAC1B,GAAG,EAAE,QAAQ,CAAC,KAAK,CAAC,QAAQ,CAAC;IAC7B,UAAU,EAAE,MAAM,CAAC;IACnB,IAAI,EAAE,SAAS,CAAC;CACjB"}
