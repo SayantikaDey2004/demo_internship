@@ -1,13 +1,22 @@
-import { type FormEvent, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { apiRequest } from '../lib/api'
+import { type FormEvent, useMemo, useState } from 'react'
+import { NavLink, useNavigate, useParams } from 'react-router-dom'
+import { apiRequest, getApiErrorMessage, setAuth } from '../lib/api'
 import { Button } from '../components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Input } from '../components/ui/input'
 import { Label } from '../components/ui/label'
 
+type LoginResponse = {
+  token: string
+  role: string
+  name: string
+  email: string
+}
+
 export default function Signup() {
   const navigate = useNavigate()
+  const { role } = useParams<{ role: string }>()
+  const activeRole = useMemo(() => (role === 'admin' ? 'admin' : 'user'), [role])
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -23,27 +32,61 @@ export default function Signup() {
       '/api/auth/signup',
       {
         method: 'POST',
-        body: JSON.stringify({ name, email, password, role: 'user' }),
+        body: JSON.stringify({ name, email, password, role: activeRole }),
+      },
+    )
+
+    if (apiError) {
+      setIsSubmitting(false)
+      setError(getApiErrorMessage(apiError, 'Unable to create account'))
+      return
+    }
+
+    const { data, error: loginError } = await apiRequest<LoginResponse>(
+      '/api/auth/login',
+      {
+        method: 'POST',
+        body: JSON.stringify({ email, password }),
       },
     )
 
     setIsSubmitting(false)
 
-    if (apiError) {
-      setError(apiError?.message || 'Unable to create account')
+    if (loginError || !data) {
+      setError('Account created. Please log in to continue.')
+      navigate(`/login/${activeRole}`)
       return
     }
 
-    navigate('/login')
+    setAuth(data.token, data.role, { name: data.name, email: data.email })
+    navigate('/')
   }
 
   return (
     <div className="mx-auto max-w-md">
       <Card>
         <CardHeader>
-          <CardTitle>Create a staff account</CardTitle>
+          <CardTitle>
+            {activeRole === 'admin' ? 'Admin signup' : 'User signup'}
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          <div className="flex gap-2">
+            <Button
+              variant={activeRole === 'admin' ? 'default' : 'outline'}
+              size="sm"
+              asChild
+            >
+              <NavLink to="/signup/admin">Admin</NavLink>
+            </Button>
+            <Button
+              variant={activeRole === 'user' ? 'default' : 'outline'}
+              size="sm"
+              asChild
+            >
+              <NavLink to="/signup/user">User</NavLink>
+            </Button>
+          </div>
           <form className="space-y-4" onSubmit={handleSubmit}>
             <div className="space-y-2">
               <Label htmlFor="name">Full name</Label>

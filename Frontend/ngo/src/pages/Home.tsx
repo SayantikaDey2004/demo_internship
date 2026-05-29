@@ -1,4 +1,6 @@
 import { ArrowRight, ClipboardList, HeartHandshake, Users } from 'lucide-react'
+import { getAuthRole, getAuthToken } from '../lib/api'
+import FormSubmit from './FormSubmit'
 
 import { Button } from '../components/ui/button'
 import {
@@ -10,6 +12,10 @@ import {
 } from '../components/ui/card'
 
 export default function Home() {
+  const role = getAuthRole()
+  const token = getAuthToken()
+  const showAdminForm = role === 'admin' && Boolean(token)
+
   return (
     <div className="flex flex-col gap-10">
       <section className="grid gap-8 rounded-2xl border border-border bg-white/80 p-8 shadow-soft md:grid-cols-[1.2fr_0.8fr]">
@@ -25,14 +31,19 @@ export default function Home() {
             without losing track of impact.
           </p>
           <div className="flex flex-wrap gap-3">
-            <Button asChild>
-              <a href="/submit">
-                Start a submission <ArrowRight className="h-4 w-4" />
-              </a>
-            </Button>
-            <Button variant="outline" asChild>
-              <a href="/admin">Open admin view</a>
-            </Button>
+            {showAdminForm ? (
+              <Button asChild>
+                <a href="#admin-submit">
+                  Start a submission <ArrowRight className="h-4 w-4" />
+                </a>
+              </Button>
+            ) : (
+              <Button asChild>
+                <a href="/login/admin">
+                  Admin login <ArrowRight className="h-4 w-4" />
+                </a>
+              </Button>
+            )}
           </div>
         </div>
         <div className="grid gap-4">
@@ -80,6 +91,20 @@ export default function Home() {
           </Card>
         ))}
       </section>
+
+      {showAdminForm ? (
+        <section id="admin-submit" className="space-y-4">
+          <div className="space-y-1">
+            <p className="text-sm font-semibold uppercase tracking-[0.2em] text-muted">
+              Admin intake
+            </p>
+            <h2 className="text-2xl font-semibold text-ink">
+              Submit a new request
+            </h2>
+          </div>
+          <FormSubmit />
+        </section>
+      ) : null}
     </div>
   )
 }

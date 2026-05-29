@@ -1,15 +1,18 @@
 import { NavLink, Outlet } from 'react-router-dom'
 import { HeartHandshake } from 'lucide-react'
 
+import { getAuthToken } from '../lib/api'
 import { Button } from './ui/button'
 
 const navItems = [
   { label: 'Home', to: '/' },
   { label: 'Submit Form', to: '/submit' },
-  { label: 'Admin', to: '/admin' },
+  { label: 'Sign out', to: '/signout' },
 ]
 
 export default function Layout() {
+  const isAuthed = Boolean(getAuthToken())
+
   return (
     <div className="min-h-screen">
       <header className="border-b border-border bg-white/80 backdrop-blur">
@@ -23,31 +26,47 @@ export default function Layout() {
               <p className="text-xs text-muted">NGO operations portal</p>
             </div>
           </div>
-          <nav className="hidden items-center gap-2 md:flex">
-            {navItems.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                className={({ isActive }) =>
-                  `rounded-md px-3 py-2 text-sm font-medium transition ${
-                    isActive
-                      ? 'bg-blue-50 text-primary'
-                      : 'text-ink hover:bg-slate-100'
-                  }`
-                }
-              >
-                {item.label}
-              </NavLink>
-            ))}
-          </nav>
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" asChild>
-              <NavLink to="/login">Log in</NavLink>
-            </Button>
-            <Button asChild>
-              <NavLink to="/signup">Sign up</NavLink>
-            </Button>
-          </div>
+          {isAuthed ? (
+            <nav className="hidden items-center gap-2 md:flex">
+              {navItems.map((item) => (
+                <NavLink
+                  key={item.to}
+                  to={item.to}
+                  className={({ isActive }) =>
+                    `rounded-md px-3 py-2 text-sm font-medium transition ${
+                      isActive
+                        ? 'bg-blue-50 text-primary'
+                        : 'text-ink hover:bg-slate-100'
+                    }`
+                  }
+                >
+                  {item.label}
+                </NavLink>
+              ))}
+            </nav>
+          ) : null}
+          {!isAuthed ? (
+            <div className="flex flex-col items-end gap-2 text-sm sm:flex-row sm:items-center">
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-muted">Log in</span>
+                <Button variant="ghost" size="sm" asChild>
+                  <NavLink to="/login/admin">Admin</NavLink>
+                </Button>
+                <Button variant="ghost" size="sm" asChild>
+                  <NavLink to="/login/user">User</NavLink>
+                </Button>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-muted">Sign up</span>
+                <Button variant="outline" size="sm" asChild>
+                  <NavLink to="/signup/admin">Admin</NavLink>
+                </Button>
+                <Button size="sm" asChild>
+                  <NavLink to="/signup/user">User</NavLink>
+                </Button>
+              </div>
+            </div>
+          ) : null}
         </div>
       </header>
 

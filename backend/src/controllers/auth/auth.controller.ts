@@ -100,10 +100,19 @@ export const login = async (
 
     res.json({
       token,
-      role: user.role
+      role: user.role,
+      name: user.name,
+      email: user.email
     });
 
   } catch (error) {
     res.status(500).json(error);
   }
+};
+
+export const logout = async (
+  _req: Request,
+  res: Response
+): Promise<void> => {
+  res.json({ message: "Logged out" });
 };

@@ -1,5 +1,6 @@
-import { type FormEvent, useState } from 'react'
-import { apiRequest, getAuthToken } from '../lib/api'
+import { type FormEvent, useMemo, useState } from 'react'
+import { NavLink } from 'react-router-dom'
+import { apiRequest, getAuthRole, getAuthToken } from '../lib/api'
 import { Button } from '../components/ui/button'
 import {
   Card,
@@ -13,6 +14,9 @@ import { Label } from '../components/ui/label'
 import { Textarea } from '../components/ui/textarea'
 
 export default function FormSubmit() {
+  const role = getAuthRole()
+  const token = getAuthToken()
+  const isAdmin = useMemo(() => role === 'admin' && Boolean(token), [role, token])
   const [title, setTitle] = useState('')
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
@@ -25,8 +29,7 @@ export default function FormSubmit() {
     setError('')
     setSuccess('')
 
-    const token = getAuthToken()
-    if (!token) {
+    if (!isAdmin) {
       setError('Please log in as an admin to submit requests.')
       return
     }
@@ -61,6 +64,22 @@ export default function FormSubmit() {
 
   return (
     <div className="mx-auto max-w-2xl">
+      {!isAdmin ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>Admin access required</CardTitle>
+            <CardDescription>
+              Only admins can submit new requests.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button asChild>
+              <NavLink to="/login/admin">Log in as admin</NavLink>
+            </Button>
+          </CardContent>
+        </Card>
+      ) : null}
+      {isAdmin ? (
       <Card>
         <CardHeader>
           <CardTitle>Community support request</CardTitle>
@@ -109,13 +128,11 @@ export default function FormSubmit() {
               <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? 'Submitting...' : 'Submit request'}
               </Button>
-              <Button variant="outline" type="button">
-                Save draft
-              </Button>
             </div>
           </form>
         </CardContent>
       </Card>
+      ) : null}
     </div>
   )
 }

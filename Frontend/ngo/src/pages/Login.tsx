@@ -1,6 +1,6 @@
-import { type FormEvent, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { apiRequest, setAuth } from '../lib/api'
+import { type FormEvent, useMemo, useState } from 'react'
+import { NavLink, useNavigate, useParams } from 'react-router-dom'
+import { apiRequest, getApiErrorMessage, setAuth } from '../lib/api'
 import { Button } from '../components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Input } from '../components/ui/input'
@@ -9,10 +9,14 @@ import { Label } from '../components/ui/label'
 type LoginResponse = {
   token: string
   role: string
+  name: string
+  email: string
 }
 
 export default function Login() {
   const navigate = useNavigate()
+  const { role } = useParams<{ role: string }>()
+  const activeRole = useMemo(() => (role === 'admin' ? 'admin' : 'user'), [role])
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -34,21 +38,39 @@ export default function Login() {
     setIsSubmitting(false)
 
     if (apiError || !data) {
-      setError(apiError?.message || 'Unable to login')
+      setError(getApiErrorMessage(apiError, 'Unable to login'))
       return
     }
 
-    setAuth(data.token, data.role)
-    navigate(data.role === 'admin' ? '/admin' : '/submit')
+    setAuth(data.token, data.role, { name: data.name, email: data.email })
+    navigate('/')
   }
 
   return (
     <div className="mx-auto max-w-md">
       <Card>
         <CardHeader>
-          <CardTitle>Welcome back</CardTitle>
+          <CardTitle>
+            {activeRole === 'admin' ? 'Admin login' : 'User login'}
+          </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
+          <div className="flex gap-2">
+            <Button
+              variant={activeRole === 'admin' ? 'default' : 'outline'}
+              size="sm"
+              asChild
+            >
+              <NavLink to="/login/admin">Admin</NavLink>
+            </Button>
+            <Button
+              variant={activeRole === 'user' ? 'default' : 'outline'}
+              size="sm"
+              asChild
+            >
+              <NavLink to="/login/user">User</NavLink>
+            </Button>
+          </div>
           <form className="space-y-4" onSubmit={handleSubmit}>
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
