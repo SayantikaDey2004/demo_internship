@@ -13,12 +13,9 @@ import { Label } from '../components/ui/label'
 import { Textarea } from '../components/ui/textarea'
 
 export default function FormSubmit() {
-  const [organization, setOrganization] = useState('')
-  const [contact, setContact] = useState('')
+  const [title, setTitle] = useState('')
   const [email, setEmail] = useState('')
-  const [phone, setPhone] = useState('')
-  const [category, setCategory] = useState('Food and essentials')
-  const [summary, setSummary] = useState('')
+  const [message, setMessage] = useState('')
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -36,19 +33,12 @@ export default function FormSubmit() {
 
     setIsSubmitting(true)
 
-    const message = [
-      `Contact: ${contact}`,
-      `Phone: ${phone || 'N/A'}`,
-      `Category: ${category}`,
-      `Summary: ${summary}`,
-    ].join('\n')
-
     const { error: apiError } = await apiRequest(
       '/api/forms/submit',
       {
         method: 'POST',
         body: JSON.stringify({
-          title: organization,
+          title,
           email,
           message,
         }),
@@ -63,12 +53,9 @@ export default function FormSubmit() {
       return
     }
 
-    setOrganization('')
-    setContact('')
+    setTitle('')
     setEmail('')
-    setPhone('')
-    setCategory('Food and essentials')
-    setSummary('')
+    setMessage('')
     setSuccess('Request submitted successfully.')
   }
 
@@ -83,72 +70,34 @@ export default function FormSubmit() {
         </CardHeader>
         <CardContent className="space-y-5">
           <form className="space-y-5" onSubmit={handleSubmit}>
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="org">Organization</Label>
-                <Input
-                  id="org"
-                  placeholder="Helping Hands"
-                  value={organization}
-                  onChange={(event) => setOrganization(event.target.value)}
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="contact">Primary contact</Label>
-                <Input
-                  id="contact"
-                  placeholder="Maria Lopez"
-                  value={contact}
-                  onChange={(event) => setContact(event.target.value)}
-                  required
-                />
-              </div>
-            </div>
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="contact@ngo.org"
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="phone">Phone</Label>
-                <Input
-                  id="phone"
-                  type="tel"
-                  placeholder="+91 98765 43210"
-                  value={phone}
-                  onChange={(event) => setPhone(event.target.value)}
-                />
-              </div>
+            <div className="space-y-2">
+              <Label htmlFor="title">Title</Label>
+              <Input
+                id="title"
+                placeholder="Request title"
+                value={title}
+                onChange={(event) => setTitle(event.target.value)}
+                required
+              />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="category">Request category</Label>
-              <select
-                id="category"
-                className="h-10 w-full rounded-md border border-border bg-white px-3 text-sm text-ink shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
-                value={category}
-                onChange={(event) => setCategory(event.target.value)}
-              >
-                <option>Food and essentials</option>
-                <option>Healthcare support</option>
-                <option>Education resources</option>
-                <option>Volunteer assistance</option>
-              </select>
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="contact@ngo.org"
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+                required
+              />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="summary">Summary</Label>
+              <Label htmlFor="message">Message</Label>
               <Textarea
-                id="summary"
+                id="message"
                 placeholder="Describe what support is needed."
-                value={summary}
-                onChange={(event) => setSummary(event.target.value)}
+                value={message}
+                onChange={(event) => setMessage(event.target.value)}
                 required
               />
             </div>

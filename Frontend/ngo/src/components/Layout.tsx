@@ -19,7 +19,7 @@ export default function Layout() {
               <HeartHandshake className="h-5 w-5" />
             </span>
             <div>
-              <p className="text-lg font-semibold text-ink">CareBridge</p>
+              <p className="text-lg font-semibold text-ink">She Can Foundation</p>
               <p className="text-xs text-muted">NGO operations portal</p>
             </div>
           </div>
@@ -57,7 +57,7 @@ export default function Layout() {
 
       <footer className="border-t border-border bg-white">
         <div className="container flex flex-col gap-2 py-6 text-sm text-muted md:flex-row md:items-center md:justify-between">
-          <span>CareBridge NGO platform</span>
+          <span>She Can Foundation NGO platform</span>
           <span>Support, volunteers, and programs in one place.</span>
         </div>
       </footer>
