@@ -1,0 +1,15 @@
+{
+  "scripts": {
+    "dev": "npm --prefix Frontend/ngo run dev",
+    "build": "npm --prefix Frontend/ngo run build",
+    "lint": "npm --prefix Frontend/ngo run lint",
+    "preview": "npm --prefix Frontend/ngo run preview"
+  },
+  "dependencies": {
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.17.0",
+    "react-router-dom": "^7.16.0",
+    "tailwind-merge": "^3.6.0",
+    "tailwindcss": "^4.3.0"
+  }
+}

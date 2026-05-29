@@ -1,0 +1,28 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Source+Serif+4:wght@400;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  margin: 0;
+  font-family: 'Outfit', system-ui, sans-serif;
+  color: #0f172a;
+  background: radial-gradient(circle at top, #f8fafc, #eef2ff 40%, #ffffff 70%);
+  min-height: 100svh;
+}
+
+h1,
+h2,
+h3 {
+  font-family: 'Source Serif 4', 'Times New Roman', serif;
+  letter-spacing: -0.02em;
+}
+
+* {
+  box-sizing: border-box;
+}

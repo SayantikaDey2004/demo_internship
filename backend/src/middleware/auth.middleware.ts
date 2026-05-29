@@ -17,8 +17,10 @@ export const authMiddleware = (
   next: NextFunction
 ): void => {
 
-  const token =
-    req.headers.authorization;
+  const authHeader = req.headers.authorization;
+  const token = authHeader?.startsWith("Bearer ")
+    ? authHeader.slice("Bearer ".length)
+    : authHeader;
 
   if (!token) {
     res.status(401).json({
